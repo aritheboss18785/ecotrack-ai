@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "NODE_ENV=production vite build",
+    "build:local": "vite build",
     "preview": "vite preview",
     "test": "node src/tests/systemValidation.ts",
     "deploy": "npm run build && npx gh-pages -d dist"
