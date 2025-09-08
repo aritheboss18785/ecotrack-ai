@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   publicDir: 'public',
-  base: './', // For GitHub Pages compatibility
+  base: '/ecotrack-ai/', // For GitHub Pages compatibility
   build: {
     outDir: 'dist'
   }
