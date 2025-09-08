@@ -68,7 +68,7 @@ EcoTrack AI revolutionizes personal carbon footprint tracking by combining **nat
 #### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/ecotrack-ai.git
+git clone https://github.com/aritheboss18785/ecotrack-ai.git
 cd ecotrack-ai
 
 # Install dependencies
@@ -85,9 +85,7 @@ npm run preview
 ```
 
 ### Live Demo
-🌐 **[Try EcoTrack AI Live](https://YOUR_USERNAME.github.io/ecotrack-ai/)**
-
-> **Note**: Replace `YOUR_USERNAME` with your actual GitHub username after publishing
+🌐 **[Try EcoTrack AI Live](https://aritheboss18785.github.io/ecotrack-ai/)**
 
 ### Usage Examples
 
