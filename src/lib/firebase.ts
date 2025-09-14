@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, orderBy, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
 import { getAnalytics } from "firebase/analytics";
+
 // Firebase config - Replace with your actual config from Firebase Console
 const firebaseConfig = {
   apiKey: "AIzaSyB5i6-7GJT9cYSSxcGzx5cHzst35iv2J1Q",
@@ -24,10 +25,39 @@ export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
 // Auth functions
-export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
-export const signInWithEmail = (email: string, password: string) => signInWithEmailAndPassword(auth, email, password);
-export const signUpWithEmail = (email: string, password: string) => createUserWithEmailAndPassword(auth, email, password);
-export const logout = () => signOut(auth);
+export const signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    return result;
+  } catch (error) {
+    console.error('Firebase: Google sign-in error', error);
+    throw error;
+  }
+};
+
+export const signInWithEmail = async (email: string, password: string) => {
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    return result;
+  } catch (error) {
+    console.error('Firebase: Email sign-in error', error);
+    throw error;
+  }
+};
+
+export const signUpWithEmail = async (email: string, password: string) => {
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    return result;
+  } catch (error) {
+    console.error('Firebase: Email sign-up error', error);
+    throw error;
+  }
+};
+
+export const logout = () => {
+  return signOut(auth);
+};
 
 // User data functions
 export const createUserProfile = async (userId: string, userData: any) => {

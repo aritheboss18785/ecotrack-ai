@@ -1,5 +1,7 @@
 # EcoTrack AI - Intelligent Carbon Footprint Tracker
 
+🌱 **PRODUCTION READY** | 🚀 **Live Demo**: [EcoTrack AI](https://aritheboss18785.github.io/ecotrack-ai/)
+
 EcoTrack AI revolutionizes personal carbon footprint tracking by combining **natural language processing** with **scientifically accurate emission factors**. Unlike traditional apps that require manual input of numerical values, EcoTrack AI lets users describe their activities in plain English and automatically calculates precise carbon emissions.
 
 ## 🌟 Key Features
