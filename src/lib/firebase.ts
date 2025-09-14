@@ -2,19 +2,21 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, orderBy, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
-
+import { getAnalytics } from "firebase/analytics";
 // Firebase config - Replace with your actual config from Firebase Console
 const firebaseConfig = {
-  apiKey: "your-api-key-here",
-  authDomain: "ecotrack-ai.firebaseapp.com",
-  projectId: "ecotrack-ai",
-  storageBucket: "ecotrack-ai.appspot.com",
-  messagingSenderId: "your-sender-id",
-  appId: "your-app-id"
+  apiKey: "AIzaSyB5i6-7GJT9cYSSxcGzx5cHzst35iv2J1Q",
+  authDomain: "ecotrack-ai-733e5.firebaseapp.com",
+  projectId: "ecotrack-ai-733e5",
+  storageBucket: "ecotrack-ai-733e5.firebasestorage.app",
+  messagingSenderId: "942610983008",
+  appId: "1:942610983008:web:29b6ec84d68c987cc83b05",
+  measurementId: "G-DCTRBV4QNX"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
