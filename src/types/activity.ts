@@ -8,6 +8,9 @@ export interface Activity {
   time: string;
   itemName?: string; // Optional: specific item name for better tracking
   confidence?: number; // Optional: AI parsing confidence (0-1)
+  userId?: string; // For Firebase storage
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface ParsedActivity {
@@ -31,4 +34,25 @@ export interface EmissionFactor {
   value: number; // kg CO2e per unit
   unit: string;
   source: string;
+}
+
+// User profile types
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  photoURL?: string;
+  settings: {
+    dailyCarbonBudget: number;
+    units: 'metric' | 'imperial';
+    notifications: boolean;
+  };
+  stats: {
+    totalActivities: number;
+    totalCO2Saved: number;
+    streak: number;
+    level: number;
+  };
+  createdAt: Date;
+  lastUpdated: Date;
 }
