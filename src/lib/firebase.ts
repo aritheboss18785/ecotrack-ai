@@ -4,8 +4,13 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPasswor
 import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, orderBy, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
 import { getAnalytics } from "firebase/analytics";
 
-// Development mode toggle - set to false when Firebase is properly configured
+// Development mode toggle - always use development mode for GitHub Pages
+// Set to false when Firebase is properly configured for production
 const DEVELOPMENT_MODE = true;
+
+console.log('🔧 Firebase Mode: DEVELOPMENT (Mock Authentication)');
+console.log('🔧 All authentication will use mock data - no Firebase calls');
+console.log('🔧 To use real Firebase, set DEVELOPMENT_MODE = false');
 
 const firebaseConfig = {
   apiKey: "AIzaSyB5i6-7GJT9cYSSxcGzx5cHzst35iv2J1Q",
@@ -73,8 +78,11 @@ export const signInWithGoogle = async () => {
 
 export const signInWithEmail = async (email: string, password: string) => {
   if (DEVELOPMENT_MODE) {
-    console.log('🔧 Development Mode: Mock email sign-in successful');
+    console.log('🔧 Development Mode: Mock email sign-in successful for:', email);
     return mockAuthSuccess();
+  }
+  if (!auth) {
+    throw new Error('Firebase not initialized');
   }
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
@@ -86,8 +94,11 @@ export const signInWithEmail = async (email: string, password: string) => {
 
 export const signUpWithEmail = async (email: string, password: string) => {
   if (DEVELOPMENT_MODE) {
-    console.log('🔧 Development Mode: Mock email sign-up successful');
+    console.log('🔧 Development Mode: Mock email sign-up successful for:', email);
     return mockAuthSuccess();
+  }
+  if (!auth) {
+    throw new Error('Firebase not initialized');
   }
   try {
     const result = await createUserWithEmailAndPassword(auth, email, password);
