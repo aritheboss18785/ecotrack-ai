@@ -20,6 +20,7 @@ function AppContent() {
 
   // Load user activities when user is authenticated
   useEffect(() => {
+    console.log('🚀 App: User state changed:', user ? `User ${user.uid}` : 'No user');
     if (user) {
       loadUserActivities();
     }
@@ -28,9 +29,11 @@ function AppContent() {
   const loadUserActivities = async () => {
     if (!user) return;
     
+    console.log('🚀 App: Loading activities for user:', user.uid);
     setLoadingActivities(true);
     try {
       const userActivities = await getUserActivities(user.uid);
+      console.log('🚀 App: Activities loaded:', userActivities.length);
       // Convert Firestore data to Activity format
       const formattedActivities = userActivities.map((activity: any) => ({
         id: activity.id,
@@ -45,6 +48,7 @@ function AppContent() {
       }));
       setActivities(formattedActivities);
     } catch (error) {
+      console.error('🚨 App: Error loading activities:', error);
       toast.error('Failed to load your activities');
     } finally {
       setLoadingActivities(false);
