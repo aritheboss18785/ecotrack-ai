@@ -31,11 +31,14 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
   };
 
   const handleGoogleSignIn = async () => {
+    console.log('🚀 AuthForm: Google sign-in initiated');
     setLoading(true);
     try {
       const result = await signInWithGoogle();
+      console.log('🚀 AuthForm: Google sign-in successful:', result);
       toast.success('Successfully signed in with Google!');
     } catch (error: any) {
+      console.error('🚨 AuthForm: Google sign-in error:', error);
       toast.error(error.message || 'Failed to sign in with Google');
     } finally {
       setLoading(false);
@@ -44,11 +47,14 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🚀 AuthForm: Email auth initiated:', isLogin ? 'Sign In' : 'Sign Up');
     setLoading(true);
 
     try {
       if (isLogin) {
+        console.log('🚀 AuthForm: Attempting email sign-in');
         const result = await signInWithEmail(formData.email, formData.password);
+        console.log('🚀 AuthForm: Email sign-in successful:', result);
         toast.success('Successfully signed in!');
       } else {
         if (formData.password !== formData.confirmPassword) {
@@ -56,10 +62,13 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
           setLoading(false);
           return;
         }
+        console.log('🚀 AuthForm: Attempting email sign-up');
         const result = await signUpWithEmail(formData.email, formData.password);
+        console.log('🚀 AuthForm: Email sign-up successful:', result);
         toast.success('Account created successfully!');
       }
     } catch (error: any) {
+      console.error('🚨 AuthForm: Email auth error:', error);
       toast.error(error.message || `Failed to ${isLogin ? 'sign in' : 'create account'}`);
     } finally {
       setLoading(false);

@@ -29,7 +29,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('🚀 AuthContext: Setting up auth listener');
     const unsubscribe = onAuthStateChange(async (authUser) => {
+      console.log('🚀 AuthContext: Auth state changed:', authUser ? 'User logged in' : 'No user');
       setUser(authUser);
       
       if (authUser) {
@@ -61,7 +63,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }
           
           setUserProfile(profile);
+          console.log('🚀 AuthContext: User profile loaded successfully');
         } catch (error) {
+          console.error('Error loading user profile:', error);
           // Set a basic profile even if there's an error
           setUserProfile({
             email: authUser.email,
@@ -91,12 +95,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const handleSignOut = async () => {
+    console.log('🚀 AuthContext: Signing out user');
     try {
       await logout();
       setUser(null);
       setUserProfile(null);
+      console.log('🚀 AuthContext: Sign out successful');
     } catch (error) {
-      // Silent error handling for production
+      console.error('Error signing out:', error);
     }
   };
 
