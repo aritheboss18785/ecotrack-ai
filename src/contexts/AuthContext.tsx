@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from 'firebase/auth';
-import { onAuthStateChange, getUserProfile, createUserProfile } from '../lib/firebase';
+import { onAuthStateChange, getUserProfile, createUserProfile, logout } from '../lib/firebase';
 
 interface AuthContextType {
   user: User | null;
@@ -63,6 +63,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
           setUserProfile(profile);
         } catch (error) {
           console.error('Error loading user profile:', error);
+          // Set a basic profile even if there's an error
+          setUserProfile({
+            email: authUser.email,
+            name: authUser.displayName || 'User',
+            photoURL: authUser.photoURL,
+            settings: {
+              dailyCarbonBudget: 12.0,
+              units: 'metric',
+              notifications: true
+            },
+            stats: {
+              totalActivities: 0,
+              totalCO2Saved: 0,
+              streak: 0,
+              level: 1
+            }
+          });
         }
       } else {
         setUserProfile(null);
@@ -76,7 +93,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const handleSignOut = async () => {
     try {
-      const { logout } = await import('../lib/firebase');
       await logout();
       setUser(null);
       setUserProfile(null);

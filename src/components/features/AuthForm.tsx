@@ -33,9 +33,8 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
       toast.success('Successfully signed in with Google!');
-      onSuccess();
     } catch (error: any) {
       toast.error(error.message || 'Failed to sign in with Google');
     } finally {
@@ -49,17 +48,17 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
 
     try {
       if (isLogin) {
-        await signInWithEmail(formData.email, formData.password);
+        const result = await signInWithEmail(formData.email, formData.password);
         toast.success('Successfully signed in!');
       } else {
         if (formData.password !== formData.confirmPassword) {
           toast.error('Passwords do not match');
+          setLoading(false);
           return;
         }
-        await signUpWithEmail(formData.email, formData.password);
+        const result = await signUpWithEmail(formData.email, formData.password);
         toast.success('Account created successfully!');
       }
-      onSuccess();
     } catch (error: any) {
       toast.error(error.message || `Failed to ${isLogin ? 'sign in' : 'create account'}`);
     } finally {
