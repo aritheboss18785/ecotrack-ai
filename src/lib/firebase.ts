@@ -30,7 +30,6 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     return result;
   } catch (error) {
-    console.error('Firebase: Google sign-in error', error);
     throw error;
   }
 };
@@ -40,7 +39,6 @@ export const signInWithEmail = async (email: string, password: string) => {
     const result = await signInWithEmailAndPassword(auth, email, password);
     return result;
   } catch (error) {
-    console.error('Firebase: Email sign-in error', error);
     throw error;
   }
 };
@@ -50,7 +48,6 @@ export const signUpWithEmail = async (email: string, password: string) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     return result;
   } catch (error) {
-    console.error('Firebase: Email sign-up error', error);
     throw error;
   }
 };
@@ -68,7 +65,6 @@ export const createUserProfile = async (userId: string, userData: any) => {
       lastUpdated: new Date()
     });
   } catch (error) {
-    console.error('Error creating user profile:', error);
     throw error;
   }
 };
@@ -78,7 +74,6 @@ export const getUserProfile = async (userId: string) => {
     const userDoc = await getDoc(doc(db, 'users', userId));
     return userDoc.exists() ? userDoc.data() : null;
   } catch (error) {
-    console.error('Error getting user profile:', error);
     throw error;
   }
 };
@@ -92,7 +87,6 @@ export const saveActivity = async (userId: string, activity: any) => {
       createdAt: new Date()
     });
   } catch (error) {
-    console.error('Error saving activity:', error);
     throw error;
   }
 };
@@ -110,7 +104,6 @@ export const getUserActivities = async (userId: string) => {
       ...doc.data()
     }));
   } catch (error) {
-    console.error('Error getting user activities:', error);
     throw error;
   }
 };
@@ -122,7 +115,6 @@ export const updateActivity = async (activityId: string, updates: any) => {
       updatedAt: new Date()
     });
   } catch (error) {
-    console.error('Error updating activity:', error);
     throw error;
   }
 };
@@ -131,7 +123,6 @@ export const deleteActivity = async (activityId: string) => {
   try {
     await deleteDoc(doc(db, 'activities', activityId));
   } catch (error) {
-    console.error('Error deleting activity:', error);
     throw error;
   }
 };
