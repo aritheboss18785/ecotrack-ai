@@ -62,7 +62,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
           
           setUserProfile(profile);
         } catch (error) {
-          console.error('Error loading user profile:', error);
           // Set a basic profile even if there's an error
           setUserProfile({
             email: authUser.email,
@@ -97,7 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(null);
       setUserProfile(null);
     } catch (error) {
-      console.error('Error signing out:', error);
+      // Silent error handling for production
     }
   };
 

@@ -45,7 +45,6 @@ function AppContent() {
       }));
       setActivities(formattedActivities);
     } catch (error) {
-      console.error('Error loading activities:', error);
       toast.error('Failed to load your activities');
     } finally {
       setLoadingActivities(false);
@@ -72,7 +71,6 @@ function AppContent() {
       
       toast.success('Activity saved successfully!');
     } catch (error) {
-      console.error('Error saving activity:', error);
       toast.error('Failed to save activity');
     }
   };
