@@ -1,0 +1,40 @@
+{
+  "planPath": "docs/superpowers/plans/2026-05-09-dashboard-craft-earth.md",
+  "tasks": [
+    {
+      "id": 10,
+      "subject": "Task 1: Design tokens and Tailwind craft config",
+      "status": "pending",
+      "description": "**Goal:** Add Space Grotesk, craft CSS vars, and Tailwind colour/shadow extensions.\n\n**Files:**\n- Modify: `src/styles/globals.css`\n- Modify: `tailwind.config.js`\n\n**Acceptance Criteria:**\n- [ ] `npm run build` passes\n- [ ] `bg-parchment`, `text-forest`, `text-forest-light`, `text-bark`, `shadow-craft` are valid Tailwind classes\n- [ ] `.tile`, `.tile-forest`, `.tile-hover`, `.craft-label`, `.animate-craft-fade-in` exist in globals.css\n\n**Verify:** `npm run build` → `✓ built in`\n\n```json:metadata\n{\"files\": [\"src/styles/globals.css\", \"tailwind.config.js\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"npm run build passes\", \"bg-parchment text-forest shadow-craft are valid Tailwind classes\", \".tile .tile-forest .craft-label classes exist in globals.css\"]}\n```"
+    },
+    {
+      "id": 11,
+      "subject": "Task 2: Responsive Navigation and App layout",
+      "status": "pending",
+      "blockedBy": [10],
+      "description": "**Goal:** Navigation renders as bottom bar on mobile, top bar (forest bg) on desktop; App.tsx reorders flex layout.\n\n**Files:**\n- Modify: `src/components/layout/Navigation.tsx`\n- Modify: `src/App.tsx`\n\n**Acceptance Criteria:**\n- [ ] Mobile: bottom nav bar, parchment bg, forest border-top, active dot indicator\n- [ ] Desktop: top nav bar, forest bg, parchment wordmark, forest-light active links\n- [ ] `npm run build` passes\n\n**Verify:** `npm run build` → `✓ built in`\n\n```json:metadata\n{\"files\": [\"src/components/layout/Navigation.tsx\", \"src/App.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"Mobile bottom nav renders with parchment bg\", \"Desktop top nav renders with forest bg\", \"Active tab highlighted correctly on both\"]}\n```"
+    },
+    {
+      "id": 12,
+      "subject": "Task 3: Dashboard shell, hero section, and gamification tiles",
+      "status": "pending",
+      "blockedBy": [10, 11],
+      "description": "**Goal:** Replace Dashboard wrapper and add hero carbon budget tile + level + streak tiles.\n\n**Files:**\n- Modify: `src/components/features/Dashboard.tsx`\n\n**Acceptance Criteria:**\n- [ ] Parchment background, no bg-nature-gradient or particles\n- [ ] Hero dark tile: CO₂ number, stacked unit annotation, progress bar, status badge\n- [ ] Level tile (light) and Streak tile (dark) in hero grid\n- [ ] Activity imported from `../../types/activity`\n- [ ] `npm run build` passes\n\n**Verify:** `npm run build` → `✓ built in`\n\n```json:metadata\n{\"files\": [\"src/components/features/Dashboard.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"Parchment background on Dashboard\", \"Hero tile shows todayProgress with stacked unit annotation\", \"Level and streak tiles render in hero row\"]}\n```"
+    },
+    {
+      "id": 13,
+      "subject": "Task 4: Weekly stats row and category breakdown",
+      "status": "pending",
+      "blockedBy": [12],
+      "description": "**Goal:** Add 3/4-column stat tiles and replace PieChart with horizontal bar breakdown tile.\n\n**Files:**\n- Modify: `src/components/features/Dashboard.tsx`\n\n**Acceptance Criteria:**\n- [ ] 3 stat tiles on mobile, 4 on desktop\n- [ ] Category breakdown: horizontal bar rows, forest header, muted dot colours\n- [ ] Empty state renders when no activities logged\n- [ ] `npm run build` passes\n\n**Verify:** `npm run build` → `✓ built in`\n\n```json:metadata\n{\"files\": [\"src/components/features/Dashboard.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"3 stat tiles mobile 4 desktop\", \"PieChart replaced with bar rows\", \"Empty state shows correctly\"]}\n```"
+    },
+    {
+      "id": 14,
+      "subject": "Task 5: Weekly trend, Activity Breakdown wrapper, Recent Activities",
+      "status": "pending",
+      "blockedBy": [13],
+      "description": "**Goal:** Restyle LineChart, wrap ActivityBreakdown, add Recent Activities — completing the Dashboard rewrite.\n\n**Files:**\n- Modify: `src/components/features/Dashboard.tsx`\n\n**Acceptance Criteria:**\n- [ ] LineChart in cream tile, forest line, bark axis, styled tooltip\n- [ ] ActivityBreakdown wrapped in craft tile with forest header\n- [ ] Recent Activities rows with forest header, dividers, footer\n- [ ] No Card imports remain\n- [ ] `npm run build` passes\n\n**Verify:** `npm run build` → `✓ built in`\n\n```json:metadata\n{\"files\": [\"src/components/features/Dashboard.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"LineChart restyled\", \"ActivityBreakdown in craft tile\", \"Recent Activities renders correctly\", \"No unused Card imports\"]}\n```"
+    }
+  ],
+  "lastUpdated": "2026-05-09T00:00:00Z"
+}
