@@ -118,13 +118,12 @@ export function Dashboard({ activities }: DashboardProps) {
 
   const gamificationStats = calculateGamificationStats();
 
-  const weeklyActivityCount = activities.filter(a => {
-    const actDate = new Date(a.date + 'T00:00:00');
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    weekAgo.setHours(0, 0, 0, 0);
-    return actDate >= weekAgo;
-  }).length;
+  const last7Days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return d.toISOString().split('T')[0];
+  });
+  const weeklyActivityCount = activities.filter(a => last7Days.includes(a.date)).length;
 
   const categoryDotColors: Record<string, string> = {
     transport: '#d4e8d4',
