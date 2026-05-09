@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { ActivityBreakdown } from './ActivityBreakdown';
 import { Activity } from '../../types/activity';
@@ -306,9 +305,109 @@ export function Dashboard({ activities }: DashboardProps) {
           )}
         </div>
 
-        {/* weekly trend — added in Task 5 */}
-        {/* activity breakdown — added in Task 5 */}
-        {/* recent activities — added in Task 5 */}
+        {/* ── Weekly trend ── */}
+        <div className="craft-label border-b border-[#d8cfc0] pb-[6px]">Weekly trend</div>
+
+        <div className="tile p-[14px_16px]">
+          <div className="h-[180px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trendData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+                <XAxis
+                  dataKey="day"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 10, fill: '#6b5d4f' }}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 10, fill: '#6b5d4f' }}
+                  domain={['dataMin - 1', 'dataMax + 1']}
+                />
+                <Tooltip
+                  formatter={(value) => [`${value} kg CO₂e`, 'Emissions']}
+                  contentStyle={{
+                    background: '#fff',
+                    border: '1.5px solid #1c2b1e',
+                    borderRadius: '8px',
+                    boxShadow: '3px 3px 0 #1c2b1e',
+                    fontSize: '11px',
+                    color: '#1c2b1e',
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#1c2b1e"
+                  strokeWidth={2}
+                  dot={{ fill: '#1c2b1e', strokeWidth: 0, r: 4 }}
+                  activeDot={{ r: 6, fill: '#1c2b1e', strokeWidth: 2, stroke: '#f2ece0' }}
+                  animationDuration={800}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* ── Activity breakdown ── */}
+        <div className="tile overflow-hidden">
+          <div className="bg-forest px-[16px] py-[10px] text-[10px] font-semibold uppercase tracking-[0.12em] text-forest-light">
+            Activity Breakdown
+          </div>
+          <div className="p-[14px_16px]">
+            <ActivityBreakdown activities={activities} />
+          </div>
+        </div>
+
+        {/* ── Recent activities ── */}
+        {activities.length > 0 && (
+          <>
+            <div className="craft-label border-b border-[#d8cfc0] pb-[6px]">Recent</div>
+            <div className="tile overflow-hidden">
+              <div className="bg-forest px-[16px] py-[10px] text-[10px] font-semibold uppercase tracking-[0.12em] text-forest-light">
+                Recent Activities
+              </div>
+              {activities
+                .slice(-3)
+                .reverse()
+                .map((activity) => {
+                  const categoryEmoji: Record<string, string> = {
+                    transport: '🚗',
+                    food:      '🍽️',
+                    energy:    '⚡',
+                    shopping:  '🛍️',
+                    waste:     '🗑️',
+                  };
+                  return (
+                    <div
+                      key={activity.id}
+                      className="flex items-center gap-[12px] px-[16px] py-[9px] border-b border-[#ede7da] last:border-b-0"
+                    >
+                      <span className="text-base w-[28px] text-center">
+                        {categoryEmoji[activity.category] ?? '📝'}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[11px] font-semibold text-forest truncate">
+                          {activity.itemName ?? activity.category} · {activity.amount} {activity.unit}
+                        </div>
+                        <div className="text-[10px] text-bark mt-[1px]">
+                          {activity.date === today ? 'Today' : activity.date} at {activity.time}
+                        </div>
+                      </div>
+                      <div className="text-[12px] font-bold text-forest flex-shrink-0">
+                        {activity.co2Impact.toFixed(1)} kg
+                      </div>
+                    </div>
+                  );
+                })}
+              {activities.length > 3 && (
+                <div className="px-[16px] py-[8px] text-center text-[10px] text-bark border-t border-[#ede7da]">
+                  Showing 3 of {activities.length} activities
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
       </div>
     </div>
