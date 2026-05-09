@@ -105,12 +105,27 @@ export function Progress({ activities }: ProgressProps) {
   const weeklyComparison = getWeeklyComparison();
 
   const tips = [
-    "🚶 Walk or bike for trips under 2 miles",
-    "🥗 Try plant-based meals 2-3 times per week",
-    "💡 Switch to LED bulbs to save energy",
-    "🚗 Combine errands into one trip",
-    "🌡️ Lower thermostat by 2°F in winter",
+    "Walk or bike for trips under 2 miles",
+    "Try plant-based meals 2-3 times per week",
+    "Switch to LED bulbs to save energy",
+    "Combine errands into one trip",
+    "Lower thermostat by 2°F in winter",
   ];
+
+  // Calculate streak from activities (consecutive days ending yesterday)
+  const activityDates = new Set(activities.map(a => a.date));
+  let currentStreak = 0;
+  const cursor = new Date();
+  cursor.setDate(cursor.getDate() - 1);
+  for (let i = 0; i < 30; i++) {
+    const dateStr = cursor.toISOString().split('T')[0];
+    if (activityDates.has(dateStr)) {
+      currentStreak++;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-parchment font-sans">
@@ -130,7 +145,7 @@ export function Progress({ activities }: ProgressProps) {
               className="text-forest-light font-bold leading-none"
               style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.05em' }}
             >
-              12
+              {currentStreak}
             </div>
             <div className="craft-label text-forest-light/60 mt-1">DAY STREAK</div>
           </div>
@@ -197,7 +212,7 @@ export function Progress({ activities }: ProgressProps) {
             {achievements.map((achievement) => (
               <div
                 key={achievement.id}
-                className={`tile tile-hover p-3 flex flex-col gap-2 ${achievement.earned ? 'tile-forest' : 'opacity-50'}`}
+                className={`tile p-3 flex flex-col gap-2 ${achievement.earned ? 'tile-forest tile-hover' : 'opacity-50'}`}
               >
                 <div className="text-2xl">{achievement.icon}</div>
                 <div>
