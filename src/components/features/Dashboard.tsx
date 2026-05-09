@@ -118,6 +118,22 @@ export function Dashboard({ activities }: DashboardProps) {
 
   const gamificationStats = calculateGamificationStats();
 
+  const weeklyActivityCount = activities.filter(a => {
+    const actDate = new Date(a.date + 'T00:00:00');
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    weekAgo.setHours(0, 0, 0, 0);
+    return actDate >= weekAgo;
+  }).length;
+
+  const categoryDotColors: Record<string, string> = {
+    transport: '#d4e8d4',
+    food:      '#e8d4c4',
+    energy:    '#e8e4c4',
+    shopping:  '#d4d4e8',
+    waste:     '#e8d4d4',
+  };
+
   return (
     <div className="min-h-screen bg-parchment font-sans">
       <div className="p-4 flex flex-col gap-[14px] animate-craft-fade-in max-w-5xl mx-auto">
@@ -217,8 +233,80 @@ export function Dashboard({ activities }: DashboardProps) {
           </div>
         </div>
 
-        {/* weekly stats — added in Task 4 */}
-        {/* category breakdown — added in Task 4 */}
+        {/* ── Section label ── */}
+        <div className="craft-label border-b border-[#d8cfc0] pb-[6px]">This week</div>
+
+        {/* ── Weekly stats tiles ── */}
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-[10px]">
+          <div className="tile tile-hover p-[10px_12px]">
+            <div className="craft-label">Weekly</div>
+            <div className="text-[26px] font-bold text-forest leading-none mt-1" style={{ letterSpacing: '-0.04em' }}>
+              {weeklyData.total}
+            </div>
+            <div className="text-[9px] text-bark mt-[3px]">kg CO₂e</div>
+          </div>
+          <div className="tile tile-forest tile-hover p-[10px_12px]">
+            <div className="craft-label" style={{ color: 'rgba(168,197,160,0.5)' }}>Avg/day</div>
+            <div className="text-[26px] font-bold text-forest-light leading-none mt-1" style={{ letterSpacing: '-0.04em' }}>
+              {weeklyData.average}
+            </div>
+            <div className="text-[9px] mt-[3px]" style={{ color: 'rgba(168,197,160,0.5)' }}>kg CO₂e</div>
+          </div>
+          <div className="tile tile-hover p-[10px_12px]">
+            <div className="craft-label">Best day</div>
+            <div className="text-[26px] font-bold text-forest leading-none mt-1" style={{ letterSpacing: '-0.04em' }}>
+              {weeklyData.bestDay}
+            </div>
+            <div className="text-[9px] text-bark mt-[3px]">kg CO₂e</div>
+          </div>
+          <div className="hidden md:block tile tile-hover p-[10px_12px]">
+            <div className="craft-label">Activities</div>
+            <div className="text-[26px] font-bold text-forest leading-none mt-1" style={{ letterSpacing: '-0.04em' }}>
+              {weeklyActivityCount}
+            </div>
+            <div className="text-[9px] text-bark mt-[3px]">this week</div>
+          </div>
+        </div>
+
+        {/* ── Category breakdown ── */}
+        <div className="craft-label border-b border-[#d8cfc0] pb-[6px]">Breakdown</div>
+
+        <div className="tile overflow-hidden">
+          <div className="bg-forest px-[16px] py-[10px] text-[10px] font-semibold uppercase tracking-[0.12em] text-forest-light">
+            By Category
+          </div>
+          {categoryData.length === 0 ? (
+            <div className="p-[16px] text-[11px] text-bark text-center">
+              Log your first activity to see your breakdown
+            </div>
+          ) : (
+            <div className="p-0">
+              {categoryData.map((cat) => (
+                <div
+                  key={cat.name}
+                  className="flex items-center gap-[10px] px-[16px] py-[8px] border-b border-[#ede7da] last:border-b-0"
+                >
+                  <div
+                    className="w-[8px] h-[8px] rounded-sm flex-shrink-0"
+                    style={{
+                      background: categoryDotColors[cat.name.toLowerCase()] ?? '#e0d8cc',
+                      border: '1.5px solid #1c2b1e',
+                    }}
+                  />
+                  <span className="text-[11px] font-medium text-forest flex-1">{cat.name}</span>
+                  <div className="w-[80px] h-[4px] bg-[#ede7da] rounded-sm overflow-hidden">
+                    <div
+                      className="h-full bg-forest rounded-sm transition-[width] duration-[600ms] ease-out"
+                      style={{ width: `${cat.value}%` }}
+                    />
+                  </div>
+                  <span className="text-[11px] font-semibold text-forest w-[28px] text-right">{cat.value}%</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* weekly trend — added in Task 5 */}
         {/* activity breakdown — added in Task 5 */}
         {/* recent activities — added in Task 5 */}
