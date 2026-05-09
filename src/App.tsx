@@ -5,7 +5,6 @@ import { Progress } from './components/features/Progress';
 import { Navigation } from './components/layout/Navigation';
 import { Toaster } from './components/ui/sonner';
 import { Activity } from './types/activity';
-import { toast } from 'sonner';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'log' | 'progress'>('dashboard');
@@ -18,7 +17,6 @@ export default function App() {
     };
 
     setActivities(prev => [...prev, newActivity]);
-    toast.success('Activity logged successfully!');
   };
 
   const renderActiveScreen = () => {
@@ -42,7 +40,11 @@ export default function App() {
       <div className="order-1 md:order-2 flex-1 overflow-y-auto">
         {renderActiveScreen()}
       </div>
-      <Toaster position="top-center" />
+      <Toaster
+        position="top-center"
+        offset={{ top: 72 }}
+        mobileOffset={{ top: 16 }}
+      />
     </div>
   );
 }
