@@ -35,15 +35,13 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen bg-nature-gradient flex flex-col relative">
-      <div className="flex-1 overflow-y-auto">
-        {renderActiveScreen()}
-      </div>
-      
-      <div className="flex-shrink-0">
+    <div className="h-screen bg-parchment flex flex-col">
+      <div className="order-2 md:order-1 flex-shrink-0">
         <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
-      
+      <div className="order-1 md:order-2 flex-1 overflow-y-auto">
+        {renderActiveScreen()}
+      </div>
       <Toaster position="top-center" />
     </div>
   );
