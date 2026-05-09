@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Plus, Car, Utensils, Zap, ShoppingBag, Trash2, Sparkles, Info } from 'lucide-react';
 import { toast } from 'sonner';
-import { parseActivityText, formatParsedActivity, ParsedActivity } from '../../lib/activityParser';
-
+import { ParsedActivity } from '../../lib/activityParser';
+import { parseActivityWithAI } from '../../lib/llmParser';
 import { Activity } from '../../types/activity';
 
 interface LogActivityProps {
@@ -30,6 +29,13 @@ export function LogActivity({ onAddActivity }: LogActivityProps) {
     waste: null
   });
   const [showBreakdown, setShowBreakdown] = useState<Record<string, boolean>>({
+    transport: false,
+    food: false,
+    energy: false,
+    shopping: false,
+    waste: false
+  });
+  const [isLoading, setIsLoading] = useState<Record<string, boolean>>({
     transport: false,
     food: false,
     energy: false,
@@ -77,13 +83,25 @@ export function LogActivity({ onAddActivity }: LogActivityProps) {
 
   const handleTextChange = (category: string, text: string) => {
     setActivityTexts(prev => ({ ...prev, [category]: text }));
-    
-    // Parse the text in real-time
-    if (text.trim()) {
-      const parsed = parseActivityText(text, category);
-      setParsedResults(prev => ({ ...prev, [category]: parsed }));
-    } else {
-      setParsedResults(prev => ({ ...prev, [category]: null }));
+    setParsedResults(prev => ({ ...prev, [category]: null }));
+  };
+
+  const handleAnalyse = async (category: string) => {
+    const text = activityTexts[category];
+    if (!text.trim()) return;
+
+    setIsLoading(prev => ({ ...prev, [category]: true }));
+    try {
+      const result = await parseActivityWithAI(text, category);
+      setParsedResults(prev => ({ ...prev, [category]: result }));
+      if (result.items.length === 0) {
+        toast.error('Could not identify any activities. Try being more specific.');
+      }
+    } catch (error) {
+      toast.error('Analysis failed. Check your API key and try again.');
+      console.error(error);
+    } finally {
+      setIsLoading(prev => ({ ...prev, [category]: false }));
     }
   };
 
@@ -125,182 +143,166 @@ export function LogActivity({ onAddActivity }: LogActivityProps) {
   };
 
   return (
-    <div className="min-h-screen bg-nature-gradient particles relative">
-      <div className="p-4">
+    <div className="min-h-screen bg-parchment font-sans">
+      <div className="p-4 flex flex-col gap-[14px] animate-craft-fade-in max-w-5xl mx-auto">
+
         {/* Header */}
-        <div className="text-center pt-4 mb-8 animate-slideInUp">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="animate-float">
-              <Plus size={32} className="text-green-600 animate-carbon-glow" />
-            </div>
-            <h1 className="text-4xl gradient-text font-bold tracking-tight">Log Activity</h1>
-          </div>
-          <p className="text-gray-600 text-lg">Describe your daily activities naturally</p>
-          <div className="text-sm text-blue-600 mt-2 flex items-center justify-center gap-2 glass-green px-4 py-2 rounded-full inline-flex">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            <span className="font-medium">AI-powered emission analysis</span>
+        <div className="pt-4 pb-2">
+          <div className="craft-label mb-1">LOG ACTIVITY</div>
+          <h1 className="text-3xl font-bold text-forest tracking-tight">Log Activity</h1>
+          <p className="text-bark text-sm mt-1">Describe your daily activities naturally</p>
+        </div>
+
+        {/* Category Selection */}
+        <div>
+          <div className="craft-label border-b border-[#d8cfc0] pb-[6px] mb-3">SELECT CATEGORY</div>
+          <div className="grid grid-cols-2 gap-3">
+            {categories.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setSelectedCategory(selectedCategory === id ? '' : id)}
+                className={`tile tile-hover p-5 flex flex-col items-center gap-2 ${
+                  selectedCategory === id ? 'tile-forest' : ''
+                }`}
+              >
+                <Icon size={32} className={selectedCategory === id ? 'text-forest-light' : 'text-forest'} />
+                <span className={`text-sm font-medium ${selectedCategory === id ? 'text-forest-light' : 'text-forest'}`}>
+                  {label}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
-      {/* Category Selection */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        {categories.map(({ id, label, icon: Icon }, index) => (
-          <button
-            key={id}
-            onClick={() => {
-              setSelectedCategory(selectedCategory === id ? '' : id);
-            }}
-            className={`p-6 rounded-2xl border-2 transition-all duration-300 card-hover animate-fadeInScale ${
-              selectedCategory === id
-                ? 'glass-green border-green-400 shadow-lg scale-105'
-                : 'glass border-gray-200 hover:border-green-300 hover:shadow-md'
-            }`}
-            style={{ animationDelay: `${index * 0.1}s` }}
-          >
-            <div className={`transition-all duration-300 ${
-              selectedCategory === id ? 'animate-float' : ''
-            }`}>
-              <Icon size={40} className={`mx-auto mb-3 ${
-                selectedCategory === id ? 'text-green-600' : 'text-gray-500'
-              }`} />
-              <div className={`text-sm font-medium ${
-                selectedCategory === id ? 'gradient-text' : 'text-gray-600'
-              }`}>{label}</div>
+        {/* Activity Input Card */}
+        {selectedCategory && (
+          <div className="tile overflow-hidden">
+            <div className="bg-forest px-4 py-[10px] text-[10px] font-semibold uppercase tracking-[0.12em] text-forest-light">
+              Log {categories.find(cat => cat.id === selectedCategory)?.label} Activity
             </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Activity Input Cards */}
-      {selectedCategory && (
-        <Card className="glass border-2 border-green-200/50 mb-6 card-hover shadow-xl animate-slideInUp">
-          <CardHeader className="relative">
-            <div className="absolute top-4 right-4">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse-green"></div>
-            </div>
-            <CardTitle className="flex items-center gap-3 gradient-text text-xl">
-              {categories.find(cat => cat.id === selectedCategory)?.icon && 
-                <div className="p-2 bg-green-100 rounded-full animate-float">
-                  {React.createElement(categories.find(cat => cat.id === selectedCategory)!.icon, { size: 24, className: "text-green-600" })}
-                </div>
-              }
-              <span>Log {categories.find(cat => cat.id === selectedCategory)?.label} Activity</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Text Input */}
-            <div className="space-y-2">
-              <Label htmlFor={`${selectedCategory}-text`} className="text-gray-700">
-                Describe your {selectedCategory} activity
-              </Label>
-              <Textarea
-                id={`${selectedCategory}-text`}
-                value={activityTexts[selectedCategory]}
-                onChange={(e) => handleTextChange(selectedCategory, e.target.value)}
-                placeholder={categories.find(cat => cat.id === selectedCategory)?.placeholder}
-                className="min-h-[100px] text-base"
-                rows={4}
-              />
-            </div>
-
-            {/* Examples */}
-            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-              <div className="text-sm text-blue-700 mb-2 font-medium">💡 Example phrases:</div>
-              <div className="text-xs text-blue-600 space-y-1">
-                {categories.find(cat => cat.id === selectedCategory)?.examples.map((example, index) => (
-                  <div key={index} className="cursor-pointer hover:text-blue-800" onClick={() => setActivityTexts(prev => ({ ...prev, [selectedCategory]: example }))}>
-                    • {example}
-                  </div>
-                ))}
+            <div className="p-4 flex flex-col gap-3">
+              <div className="flex flex-col gap-1">
+                <Label htmlFor={`${selectedCategory}-text`} className="text-forest text-sm font-medium">
+                  Describe your {selectedCategory} activity
+                </Label>
+                <Textarea
+                  id={`${selectedCategory}-text`}
+                  value={activityTexts[selectedCategory]}
+                  onChange={(e) => handleTextChange(selectedCategory, e.target.value)}
+                  placeholder={categories.find(cat => cat.id === selectedCategory)?.placeholder}
+                  className="min-h-[100px] bg-parchment border-forest text-forest text-sm rounded-[8px]"
+                  rows={4}
+                />
               </div>
-            </div>
 
-            {/* Parsed Results Preview */}
-            {parsedResults[selectedCategory] && parsedResults[selectedCategory]!.items.length > 0 && (
-              <div className="glass-green p-4 rounded-xl border border-green-200/50 animate-fadeInScale">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-100 rounded-full animate-carbon-glow">
-                      <Sparkles size={20} className="text-green-600" />
+              <div className="bg-parchment border border-[#d8cfc0] rounded-[8px] p-3">
+                <div className="craft-label mb-2">EXAMPLE PHRASES</div>
+                <div className="flex flex-col gap-1">
+                  {categories.find(cat => cat.id === selectedCategory)?.examples.map((example, index) => (
+                    <div
+                      key={index}
+                      className="text-xs text-bark cursor-pointer hover:text-forest transition-colors"
+                      onClick={() => handleTextChange(selectedCategory, example)}
+                    >
+                      · {example}
                     </div>
+                  ))}
+                </div>
+              </div>
+
+              {isLoading[selectedCategory] && (
+                <div className="tile-forest rounded-[8px] px-4 py-3 flex items-center gap-3">
+                  <div className="w-4 h-4 border-2 border-forest-light border-t-transparent rounded-full animate-spin" />
+                  <span className="text-forest-light text-sm">Analysing your activity...</span>
+                </div>
+              )}
+
+              {!isLoading[selectedCategory] && parsedResults[selectedCategory] && parsedResults[selectedCategory]!.items.length > 0 && (
+                <div className="tile tile-forest p-4">
+                  <div className="flex items-center justify-between mb-2">
                     <div>
-                      <span className="text-lg gradient-text font-bold">
+                      <div className="text-forest-light font-bold text-2xl tracking-[-0.04em]">
                         {parsedResults[selectedCategory]!.totalCO2Impact.toFixed(2)} kg CO₂e
-                      </span>
-                      <div className="text-xs text-gray-600">AI Analysis Result</div>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleBreakdown(selectedCategory)}
-                    className="text-green-600 hover:text-green-700 hover:bg-green-100 p-2 rounded-full"
-                  >
-                    <Info size={16} />
-                  </Button>
-                </div>
-                
-                {showBreakdown[selectedCategory] && (
-                  <div className="mt-2 space-y-1">
-                    {parsedResults[selectedCategory]!.items.map((item, index) => (
-                      <div key={index} className="text-xs text-green-600 flex justify-between">
-                        <span>• {item.name}: {item.quantity.toFixed(2)} {item.unit}</span>
-                        <span>{item.co2Impact.toFixed(2)} kg CO₂e</span>
                       </div>
-                    ))}
-                    <div className="text-xs text-green-500 mt-1">
-                      Confidence: {(parsedResults[selectedCategory]!.confidence * 100).toFixed(0)}%
+                      <div className="text-[10px] text-forest-light/60 uppercase tracking-wide">Gemini Analysis Result</div>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleBreakdown(selectedCategory)}
+                      className="text-forest-light hover:text-forest-light hover:bg-white/10 p-2 rounded-full"
+                    >
+                      <Info size={16} />
+                    </Button>
                   </div>
-                )}
-              </div>
-            )}
+                  {showBreakdown[selectedCategory] && (
+                    <div className="flex flex-col gap-1 border-t border-forest-light/20 pt-2 mt-1">
+                      {parsedResults[selectedCategory]!.items.map((item, index) => (
+                        <div key={index} className="text-xs text-forest-light/70 flex justify-between">
+                          <span>· {item.name}: {item.quantity.toFixed(2)} {item.unit}</span>
+                          <span>{item.co2Impact.toFixed(2)} kg CO₂e</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
-            {/* Log Button */}
-            <Button 
-              onClick={() => handleLogActivity(selectedCategory)}
-              className="w-full btn-eco text-white py-4 text-lg rounded-xl shadow-lg font-semibold transition-all duration-300"
-              disabled={!parsedResults[selectedCategory] || parsedResults[selectedCategory]!.items.length === 0}
-            >
-              <div className="flex items-center justify-center gap-3">
-                <Plus size={24} className="animate-float" />
-                <span>Log {categories.find(cat => cat.id === selectedCategory)?.label} Activity</span>
-              </div>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Quick Tips */}
-      <Card className="mt-6 glass border-blue-200/50 card-hover animate-slideInUp">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-blue-100 rounded-full animate-float">
-              <Sparkles size={24} className="text-blue-600" />
+              {(() => {
+                const loading = isLoading[selectedCategory];
+                const parsed = parsedResults[selectedCategory];
+                const hasText = activityTexts[selectedCategory].trim().length > 0;
+                const hasResult = parsed && parsed.items.length > 0;
+                return (
+                  <button
+                    onClick={() => hasResult ? handleLogActivity(selectedCategory) : handleAnalyse(selectedCategory)}
+                    disabled={loading || (!hasResult && !hasText)}
+                    className="w-full bg-forest text-parchment font-semibold py-3 rounded-[8px] text-sm flex items-center justify-center gap-2 shadow-craft disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-craft-lg hover:-translate-y-px transition-all"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-parchment border-t-transparent rounded-full animate-spin" />
+                        <span>Analysing...</span>
+                      </>
+                    ) : hasResult ? (
+                      <>
+                        <Plus size={18} />
+                        <span>Log {categories.find(cat => cat.id === selectedCategory)?.label} Activity</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={18} />
+                        <span>Analyse Activity</span>
+                      </>
+                    )}
+                  </button>
+                );
+              })()}
             </div>
-            <h3 className="gradient-text-blue text-lg font-bold">How AI Analysis Works</h3>
           </div>
-          <ul className="space-y-3 text-sm text-blue-600">
-            <li className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span>Use natural language to describe your activities</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-              <span>AI breaks down complex activities into components</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
-              <span>Uses real emission factors from scientific sources</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{animationDelay: '0.6s'}}></div>
-              <span>More specific descriptions = more accurate results</span>
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
+        )}
+
+        {/* How AI Analysis Works */}
+        <div className="tile overflow-hidden">
+          <div className="bg-forest px-4 py-[10px] text-[10px] font-semibold uppercase tracking-[0.12em] text-forest-light">
+            How AI Analysis Works
+          </div>
+          <div className="p-4 flex flex-col gap-2">
+            {[
+              'Use natural language to describe your activities',
+              'AI breaks down complex activities into components',
+              'Uses real emission factors from scientific sources',
+              'More specific descriptions = more accurate results',
+            ].map((tip, i) => (
+              <div key={i} className="text-xs text-bark flex items-start gap-2">
+                <span className="text-forest mt-0.5">·</span>
+                <span>{tip}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
   );
 }
