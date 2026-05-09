@@ -18,6 +18,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Space Grotesk', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -52,11 +55,23 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        /* Craft Earth */
+        parchment: '#f2ece0',
+        forest: {
+          DEFAULT: '#1c2b1e',
+          light: '#a8c5a0',
+        },
+        bark: '#6b5d4f',
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        craft: '4px 4px 0 #1c2b1e',
+        'craft-sm': '3px 3px 0 #1c2b1e',
+        'craft-lg': '6px 6px 0 #1c2b1e',
       },
       keyframes: {
         "accordion-down": {

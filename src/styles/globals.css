@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -228,7 +230,17 @@
   --sidebar-accent-foreground: #166534;
   --sidebar-border: #e2e8f0;
   --sidebar-ring: #4ade80;
-  
+  /* Craft Earth design tokens */
+  --parchment: #f2ece0;
+  --forest: #1c2b1e;
+  --forest-light: #a8c5a0;
+  --bark: #6b5d4f;
+  --cream: #ffffff;
+  --craft-shadow: 4px 4px 0 #1c2b1e;
+  --craft-shadow-sm: 3px 3px 0 #1c2b1e;
+  --craft-shadow-lg: 6px 6px 0 #1c2b1e;
+  --craft-radius: 10px;
+
   /* EcoTrack specific colors */
   --eco-green: #22c55e;
   --eco-green-light: #dcfce7;
@@ -383,4 +395,44 @@
 
 html {
   font-size: var(--font-size);
+}
+
+/* ── Craft Earth utilities ── */
+
+.tile {
+  background: var(--cream);
+  border: 1.5px solid var(--forest);
+  border-radius: var(--craft-radius);
+  box-shadow: var(--craft-shadow);
+}
+
+.tile-forest {
+  background: var(--forest);
+  border: 1.5px solid var(--forest);
+  border-radius: var(--craft-radius);
+  box-shadow: var(--craft-shadow);
+}
+
+.tile-hover {
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.tile-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--craft-shadow-lg);
+}
+
+.craft-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--bark);
+}
+
+@keyframes craftFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-craft-fade-in {
+  animation: craftFadeIn 0.4s ease-out;
 }
