@@ -1,9 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Progress as ProgressBar } from '../ui/progress';
-import { Badge } from '../ui/badge';
-import { Calendar, Target, TrendingDown, Award, Flame } from 'lucide-react';
-
 import { Activity } from '../../types/activity';
 
 interface ProgressProps {
@@ -117,151 +113,122 @@ export function Progress({ activities }: ProgressProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-nature-gradient particles relative">
-      <div className="p-4 space-y-6">
+    <div className="min-h-screen bg-parchment font-sans">
+      <div className="p-4 flex flex-col gap-[14px] animate-craft-fade-in max-w-5xl mx-auto">
+
         {/* Header */}
-        <div className="text-center pt-4 animate-slideInUp">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="animate-float">
-              <Award size={32} className="text-green-600 animate-carbon-glow" />
+        <div className="pt-4 pb-2">
+          <div className="craft-label mb-1">PROGRESS</div>
+          <h1 className="text-3xl font-bold text-forest tracking-tight">Progress</h1>
+          <p className="text-bark text-sm mt-1">Track your environmental journey</p>
+        </div>
+
+        {/* Streak Hero */}
+        <div className="tile tile-forest p-[16px_20px] flex items-center justify-between">
+          <div>
+            <div
+              className="text-forest-light font-bold leading-none"
+              style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.05em' }}
+            >
+              12
             </div>
-            <h1 className="text-4xl gradient-text font-bold tracking-tight">Progress</h1>
+            <div className="craft-label text-forest-light/60 mt-1">DAY STREAK</div>
           </div>
-          <p className="text-gray-600 text-lg">Track your environmental journey</p>
-          <div className="text-sm text-blue-600 mt-2 flex items-center justify-center gap-2 glass-green px-4 py-2 rounded-full inline-flex">
-            <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-            <span className="font-medium">Achievement & milestone tracking</span>
+          <div className="flex flex-col items-end gap-1">
+            <span className="text-4xl">🔥</span>
+            <p className="text-xs text-forest-light/50 text-right max-w-[140px]">
+              Keep logging to maintain your streak!
+            </p>
           </div>
         </div>
 
-      {/* Monthly Goal */}
-      <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-green-700">
-            <Target size={20} />
-            Monthly Goal
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center mb-4">
-            <div className="text-3xl text-green-700">{Math.round(currentMonthEmissions * 10) / 10}</div>
-            <div className="text-sm text-gray-600">of {monthlyGoal} kg CO₂e</div>
+        {/* Monthly Goal */}
+        <div>
+          <div className="craft-label border-b border-[#d8cfc0] pb-[6px] mb-3">MONTHLY GOAL</div>
+          <div className="tile p-[14px_16px]">
+            <div className="text-center mb-3">
+              <div
+                className="text-forest font-bold leading-none"
+                style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', letterSpacing: '-0.04em' }}
+              >
+                {Math.round(currentMonthEmissions * 10) / 10}
+              </div>
+              <div className="text-bark text-xs mt-1">of {monthlyGoal} kg CO₂e</div>
+            </div>
+            <ProgressBar
+              value={Math.min(monthProgress, 100)}
+              className={`mb-2 ${monthProgress > 100 ? '[&>div]:bg-[#c17f4a]' : '[&>div]:bg-forest'}`}
+            />
+            <div className="text-bark text-xs text-center">{monthProgress.toFixed(1)}% of monthly target</div>
           </div>
-          <ProgressBar value={monthProgress} className="mb-2" />
-          <div className="text-sm text-gray-600 text-center">
-            {monthProgress.toFixed(1)}% of monthly target
-          </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Weekly Comparison */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-gray-800">
-            <Calendar size={20} />
+        {/* Weekly Comparison */}
+        <div className="tile overflow-hidden">
+          <div className="bg-forest px-4 py-[10px] text-[10px] font-semibold uppercase tracking-[0.12em] text-forest-light">
             Weekly Progress
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {weeklyComparison.map((week, index) => {
+          </div>
+          <div className="p-4 flex flex-col gap-3">
+            {weeklyComparison.map((week) => {
               const isUnderTarget = week.emissions < week.target;
               const percentage = (week.emissions / week.target) * 100;
-              
               return (
-                <div key={week.week} className="space-y-2">
+                <div key={week.week} className="flex flex-col gap-1">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">{week.week}</span>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-sm ${isUnderTarget ? 'text-green-600' : 'text-orange-600'}`}>
-                        {week.emissions} kg CO₂e
-                      </span>
-                      {isUnderTarget && <TrendingDown size={16} className="text-green-500" />}
-                    </div>
+                    <span className="text-bark text-xs">{week.week}</span>
+                    <span className={`text-xs font-medium ${isUnderTarget ? 'text-forest' : 'text-[#c17f4a]'}`}>
+                      {week.emissions} kg CO₂e
+                    </span>
                   </div>
-                  <ProgressBar 
-                    value={Math.min(percentage, 100)} 
-                    className={`${isUnderTarget ? '[&>div]:bg-green-500' : '[&>div]:bg-orange-500'}`}
+                  <ProgressBar
+                    value={Math.min(percentage, 100)}
+                    className={isUnderTarget ? '[&>div]:bg-forest-light' : '[&>div]:bg-[#c17f4a]'}
                   />
                 </div>
               );
             })}
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Achievements */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-gray-800">
-            <Award size={20} />
-            Achievements
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-3">
+        {/* Achievements */}
+        <div>
+          <div className="craft-label border-b border-[#d8cfc0] pb-[6px] mb-3">ACHIEVEMENTS</div>
+          <div className="grid grid-cols-2 gap-3">
             {achievements.map((achievement) => (
-              <div 
+              <div
                 key={achievement.id}
-                className={`p-3 rounded-lg border ${
-                  achievement.earned 
-                    ? 'bg-green-50 border-green-200' 
-                    : 'bg-gray-50 border-gray-200'
-                }`}
+                className={`tile tile-hover p-3 flex flex-col gap-2 ${achievement.earned ? 'tile-forest' : 'opacity-50'}`}
               >
-                <div className="flex items-start gap-3">
-                  <div className="text-2xl">{achievement.icon}</div>
-                  <div className="flex-1">
-                    <div className={`flex items-center gap-2 mb-1 ${
-                      achievement.earned ? 'text-green-700' : 'text-gray-500'
-                    }`}>
-                      <span className="text-sm">{achievement.title}</span>
-                      {achievement.earned && (
-                        <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
-                          Earned
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-600">{achievement.description}</p>
+                <div className="text-2xl">{achievement.icon}</div>
+                <div>
+                  <div className={`text-sm font-semibold ${achievement.earned ? 'text-forest-light' : 'text-forest'}`}>
+                    {achievement.title}
                   </div>
+                  {achievement.earned && (
+                    <div className="craft-label text-forest-light/60 mt-0.5">EARNED</div>
+                  )}
                 </div>
+                <p className={`text-xs ${achievement.earned ? 'text-forest-light/60' : 'text-bark'}`}>
+                  {achievement.description}
+                </p>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Current Streak */}
-      <Card className="bg-gradient-to-r from-orange-50 to-red-50 border-orange-200">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-orange-700 mb-1">Current Streak</h3>
-              <p className="text-xs text-gray-600">Keep logging to maintain your streak!</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Flame className="text-red-500" size={24} />
-              <span className="text-2xl text-red-600">12</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Eco Tips */}
-      <Card className="bg-blue-50 border-blue-200">
-        <CardHeader>
-          <CardTitle className="text-blue-700">💡 Eco Tips</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
+        {/* Eco Tips */}
+        <div>
+          <div className="craft-label border-b border-[#d8cfc0] pb-[6px] mb-3">ECO TIPS</div>
+          <div className="tile p-[14px_16px] flex flex-col gap-2">
             {tips.map((tip, index) => (
-              <div key={index} className="text-sm text-blue-700 p-2 bg-white rounded border border-blue-100">
-                {tip}
+              <div key={index} className="text-xs text-bark flex items-start gap-2">
+                <span className="text-forest mt-0.5">·</span>
+                <span>{tip}</span>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+
       </div>
     </div>
   );
