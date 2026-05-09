@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Plus, Car, Utensils, Zap, ShoppingBag, Trash2, Sparkles, Info } from 'lucide-react';
@@ -226,14 +225,12 @@ export function LogActivity({ onAddActivity }: LogActivityProps) {
                       </div>
                       <div className="text-[10px] text-forest-light/60 uppercase tracking-wide">Gemini Analysis Result</div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                    <button
                       onClick={() => toggleBreakdown(selectedCategory)}
-                      className="text-forest-light hover:text-forest-light hover:bg-white/10 p-2 rounded-full"
+                      className="text-forest-light hover:bg-white/10 p-2 rounded-full transition-colors"
                     >
                       <Info size={16} />
-                    </Button>
+                    </button>
                   </div>
                   {showBreakdown[selectedCategory] && (
                     <div className="flex flex-col gap-1 border-t border-forest-light/20 pt-2 mt-1">
