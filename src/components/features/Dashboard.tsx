@@ -15,7 +15,8 @@ export function Dashboard({ activities }: DashboardProps) {
   const todayProgress = todaysActivities.reduce((sum, activity) => sum + activity.co2Impact, 0);
   
   const dailyTarget = 12.0;
-  const usedPercentage = Math.min((todayProgress / dailyTarget) * 100, 100);
+  const rawPercentage = (todayProgress / dailyTarget) * 100;
+  const usedPercentage = Math.min(rawPercentage, 100);
   const remainingPercentage = Math.max(100 - usedPercentage, 0);
   const remainingBudget = Math.max(dailyTarget - todayProgress, 0);
 
@@ -129,10 +130,10 @@ export function Dashboard({ activities }: DashboardProps) {
         </div>
 
         {/* ── Hero row: budget (2fr) + level (1fr) + streak (1fr) ── */}
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-[10px]">
+        <div className="grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr] gap-[10px]">
 
           {/* Carbon budget tile (dark) */}
-          <div className="tile tile-forest tile-hover p-[14px_16px]">
+          <div className="tile tile-forest tile-hover p-[14px_16px] col-span-2 md:col-span-1">
             <div className="craft-label" style={{ color: 'rgba(168,197,160,0.5)' }}>
               Carbon budget today
             </div>
@@ -169,10 +170,10 @@ export function Dashboard({ activities }: DashboardProps) {
               style={{ background: 'rgba(168,197,160,0.1)', border: '1px solid rgba(168,197,160,0.25)' }}
             >
               <div className={`w-[6px] h-[6px] rounded-full ${
-                usedPercentage > 100 ? 'bg-red-400' : usedPercentage > 80 ? 'bg-yellow-400' : 'bg-forest-light'
+                rawPercentage > 100 ? 'bg-red-400' : rawPercentage > 80 ? 'bg-yellow-400' : 'bg-forest-light'
               }`} />
               <span className="text-[10px] font-semibold text-forest-light uppercase tracking-[0.08em]">
-                {usedPercentage > 100 ? 'Over budget' : usedPercentage > 80 ? 'Running low' : 'On track'}
+                {rawPercentage > 100 ? 'Over budget' : rawPercentage > 80 ? 'Running low' : 'On track'}
               </span>
             </div>
           </div>
