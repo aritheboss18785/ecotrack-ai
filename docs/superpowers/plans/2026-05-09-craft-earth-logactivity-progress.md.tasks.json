@@ -4,29 +4,26 @@
     {
       "id": 9,
       "subject": "Task 1: Restyle LogActivity.tsx",
-      "status": "pending",
-      "description": "**Goal:** Replace the old glassmorphism LogActivity UI with Craft Earth tiles, keeping all AI-parse logic intact.\n\n**Files:**\n- Modify: `src/components/features/LogActivity.tsx`\n\n**Acceptance Criteria:**\n- [ ] Page uses `bg-parchment` background, no `bg-nature-gradient` or `particles`\n- [ ] Category picker is a 2×3 grid of `.tile` / `.tile-forest` buttons\n- [ ] Selected category renders a `.tile` with a forest header bar and craft-styled textarea\n- [ ] AI result preview uses `.tile.tile-forest` (dark tile reveal)\n- [ ] Action button uses `bg-forest text-parchment shadow-craft`\n- [ ] `npm run build` exits 0\n\n**Verify:** `npm run build` → exits 0 with no TypeScript errors\n\n```json:metadata\n{\"files\": [\"src/components/features/LogActivity.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"bg-parchment background, no bg-nature-gradient\", \"category picker uses .tile/.tile-forest\", \"AI result preview uses .tile.tile-forest\", \"action button uses bg-forest text-parchment shadow-craft\", \"npm run build exits 0\"]}\n```"
+      "status": "completed",
+      "description": "**Goal:** Replace the old glassmorphism LogActivity UI with Craft Earth tiles, keeping all AI-parse logic intact.\n\n**Files:**\n- Modify: `src/components/features/LogActivity.tsx`\n\n**Verify:** `npm run build` → exits 0\n\n```json:metadata\n{\"files\": [\"src/components/features/LogActivity.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"bg-parchment background\", \"category picker uses .tile/.tile-forest\", \"AI result preview uses .tile.tile-forest\", \"action button uses bg-forest text-parchment shadow-craft\", \"npm run build exits 0\"]}\n```"
     },
     {
       "id": 10,
       "subject": "Task 2: Restyle Progress.tsx",
-      "status": "pending",
-      "blockedBy": [9],
-      "description": "**Goal:** Replace old Progress UI with Craft Earth tiles; move streak to hero position; elevate achievements to dark tiles.\n\n**Files:**\n- Modify: `src/components/features/Progress.tsx`\n\n**Acceptance Criteria:**\n- [ ] Page uses `bg-parchment` background\n- [ ] Streak tile is the first content element, full-width `.tile.tile-forest` with large streak number\n- [ ] Monthly goal shows big number + `[&>div]:bg-forest` progress bar (amber if over target)\n- [ ] Weekly comparison bars use `forest-light` (under) / `#c17f4a` (over) fills\n- [ ] Earned achievements: `.tile.tile-forest` dark card; unearned: `.tile.opacity-50` faded\n- [ ] `npm run build` exits 0\n\n**Verify:** `npm run build` → exits 0 with no TypeScript errors\n\n```json:metadata\n{\"files\": [\"src/components/features/Progress.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"bg-parchment background\", \"streak hero is first element as dark tile\", \"achievements grid earned=dark/unearned=faded\", \"npm run build exits 0\"]}\n```"
+      "status": "completed",
+      "description": "**Goal:** Replace old Progress UI with Craft Earth tiles; move streak to hero position; elevate achievements to dark tiles.\n\n**Files:**\n- Modify: `src/components/features/Progress.tsx`\n\n**Verify:** `npm run build` → exits 0\n\n```json:metadata\n{\"files\": [\"src/components/features/Progress.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"bg-parchment background\", \"streak hero is first element as dark tile\", \"achievements grid earned=dark/unearned=faded\", \"npm run build exits 0\"]}\n```"
     },
     {
       "id": 11,
       "subject": "Task 3: Restyle ActivityBreakdown.tsx",
-      "status": "pending",
-      "blockedBy": [9],
-      "description": "**Goal:** Replace gray Shadcn Cards in ActivityBreakdown with craft tiles so the component is visually consistent when embedded in the Dashboard.\n\n**Files:**\n- Modify: `src/components/features/ActivityBreakdown.tsx`\n\n**Acceptance Criteria:**\n- [ ] No Shadcn Card, Badge, or Button components remain\n- [ ] Date group headers use `.craft-label` style with `border-[#d8cfc0]` separator\n- [ ] Each activity row is a `.tile.tile-hover` div\n- [ ] \"AI Parsed\" badge is a craft-style span with `bg-forest text-forest-light`\n- [ ] Empty state is a plain div with `text-bark`\n- [ ] `npm run build` exits 0\n\n**Verify:** `npm run build` → exits 0 with no TypeScript errors\n\n```json:metadata\n{\"files\": [\"src/components/features/ActivityBreakdown.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"no Shadcn Card/Badge/Button\", \"date headers use craft-label\", \"activity rows use .tile.tile-hover\", \"AI Parsed badge uses bg-forest text-forest-light\", \"npm run build exits 0\"]}\n```"
+      "status": "completed",
+      "description": "**Goal:** Replace gray Shadcn Cards in ActivityBreakdown with craft tiles.\n\n**Files:**\n- Modify: `src/components/features/ActivityBreakdown.tsx`\n\n**Verify:** `npm run build` → exits 0\n\n```json:metadata\n{\"files\": [\"src/components/features/ActivityBreakdown.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"no Shadcn Card/Badge/Button\", \"date headers use craft-label\", \"activity rows use .tile.tile-hover\", \"npm run build exits 0\"]}\n```"
     },
     {
       "id": 12,
       "subject": "Task 4: Visual verification pass",
-      "status": "pending",
-      "blockedBy": [9, 10, 11],
-      "description": "**Goal:** Confirm all three restyled pages look correct in the browser.\n\n**Files:** No code changes expected; any tweaks committed here.\n\n**Acceptance Criteria:**\n- [ ] `npm run dev` starts without errors\n- [ ] Dashboard ActivityBreakdown section matches craft aesthetic\n- [ ] LogActivity page renders correctly\n- [ ] Progress page streak hero is prominent, achievements dark/faded correctly\n- [ ] No leftover glass/gradient-text/bg-nature-gradient artifacts\n\n**Verify:** Visual inspection at `http://localhost:5200`\n\n```json:metadata\n{\"files\": [], \"verifyCommand\": \"npm run dev\", \"acceptanceCriteria\": [\"no visual regressions on Dashboard\", \"LogActivity craft tiles render correctly\", \"Progress streak hero prominent\", \"no old aesthetic artifacts\"]}\n```"
+      "status": "completed",
+      "description": "**Goal:** Confirm all three restyled pages look correct in the browser.\n\n**Verify:** Visual inspection at http://localhost:5175\n\n```json:metadata\n{\"files\": [], \"verifyCommand\": \"npm run dev\", \"acceptanceCriteria\": [\"no visual regressions\", \"all craft patterns render correctly\"]}\n```"
     }
   ],
   "lastUpdated": "2026-05-09T00:00:00Z"

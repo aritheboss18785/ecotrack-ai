@@ -16,7 +16,6 @@ export function Dashboard({ activities }: DashboardProps) {
   const dailyTarget = 12.0;
   const rawPercentage = (todayProgress / dailyTarget) * 100;
   const usedPercentage = Math.min(rawPercentage, 100);
-  const remainingPercentage = Math.max(100 - usedPercentage, 0);
   const remainingBudget = Math.max(dailyTarget - todayProgress, 0);
 
   // Calculate weekly data
@@ -59,14 +58,6 @@ export function Dashboard({ activities }: DashboardProps) {
       return [];
     }
 
-    const categoryColors = {
-      transport: '#4ade80',
-      food: '#0ea5e9',
-      energy: '#8b5cf6',
-      shopping: '#f59e0b',
-      waste: '#ef4444',
-    };
-
     const categoryNames = {
       transport: 'Transport',
       food: 'Food',
@@ -79,7 +70,6 @@ export function Dashboard({ activities }: DashboardProps) {
       .map(([category, total]) => ({
         name: categoryNames[category as keyof typeof categoryNames] || category,
         value: Math.round((total / totalEmissions) * 100),
-        color: categoryColors[category as keyof typeof categoryColors] || '#64748b'
       }))
       .filter(cat => cat.value > 0)
       .sort((a, b) => b.value - a.value);

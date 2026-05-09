@@ -88,3 +88,10 @@ jspm_packages/
 # Temporary folders
 tmp/
 temp/
+
+# Claude and LLM-related files (internal development only)
+CLAUDE.md
+.claude/
+.superpowers/
+src/lib/llmParser.ts
+playwright-nlp-test.mjs
