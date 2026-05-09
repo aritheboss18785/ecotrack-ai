@@ -1,7 +1,7 @@
 {
   "name": "ecotrack-ai",
   "version": "1.0.0",
-  "description": "AI-powered carbon footprint tracking app",
+  "description": "Intelligent carbon footprint tracking app",
   "type": "module",
   "scripts": {
     "dev": "vite",
