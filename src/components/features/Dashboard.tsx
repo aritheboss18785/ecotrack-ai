@@ -31,7 +31,8 @@ export function Dashboard({ activities }: DashboardProps) {
     return last7Days.map(date => {
       const dayActivities = activities.filter(activity => activity.date === date);
       const dayTotal = dayActivities.reduce((sum, activity) => sum + activity.co2Impact, 0);
-      const dayName = new Date(date).toLocaleDateString('en', { weekday: 'short' });
+      const [y, m, d] = date.split('-').map(Number);
+      const dayName = new Date(y, m - 1, d).toLocaleDateString('en', { weekday: 'short' });
       return { day: dayName, value: Math.round(dayTotal * 10) / 10 };
     });
   };
@@ -94,7 +95,7 @@ export function Dashboard({ activities }: DashboardProps) {
     const totalActivities = activities.length;
     const level = Math.floor(totalActivities / 10) + 1;
     const xp = (totalActivities % 10) * 50;
-    const maxXp = 500;
+    const maxXp = 450;
     
     // Streak counts consecutive fully-completed past days (yesterday and earlier)
     const activityDates = new Set(activities.map(a => a.date));
@@ -159,11 +160,11 @@ export function Dashboard({ activities }: DashboardProps) {
             >
               <div
                 className="h-full bg-forest-light rounded-sm transition-[width] duration-[600ms] ease-out"
-                style={{ width: `${Math.min(usedPercentage, 100)}%` }}
+                style={{ width: `${usedPercentage}%` }}
               />
             </div>
             <div className="text-[9px] mt-[5px]" style={{ color: 'rgba(168,197,160,0.45)' }}>
-              {Math.min(usedPercentage, 100).toFixed(0)}% used · {remainingBudget.toFixed(1)} kg remaining
+              {usedPercentage.toFixed(0)}% used · {remainingBudget.toFixed(1)} kg remaining
             </div>
             <div
               className="inline-flex items-center gap-[5px] mt-[10px] rounded-full px-[10px] py-[4px]"
