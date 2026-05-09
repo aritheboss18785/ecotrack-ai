@@ -34,7 +34,7 @@ Builds and pushes to GitHub Pages.
 
 ## Stack
 
-React, TypeScript, Vite, Tailwind CSS, Recharts, Radix UI. The AI parsing is a single call to `gemini-2.5-flash-lite` with a structured JSON response — `src/lib/llmParser.ts` is where that lives if you want to add emission factors or new categories. The emission factor database is in `src/lib/carbon/carbonEmissions.ts`.
+React, TypeScript, Vite, Tailwind CSS, Recharts, Radix UI. The AI parsing is a single call to `gemini-2.5-flash-lite` with a structured JSON response. It is in `src/lib/llmParser.ts` if you want to add emission factors or new categories. The emission factor database is in `src/lib/carbon/carbonEmissions.ts`.
 
 ## A few things worth knowing
 
