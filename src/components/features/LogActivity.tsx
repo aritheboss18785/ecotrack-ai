@@ -3,7 +3,7 @@ import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Plus, Car, Utensils, Zap, ShoppingBag, Trash2, Sparkles, Info } from 'lucide-react';
 import { toast } from 'sonner';
-import { ParsedActivity } from '../../lib/activityParser';
+import { ParsedActivity, parseActivityText } from '../../lib/activityParser';
 import { parseActivityWithAI } from '../../lib/llmParser';
 import { Activity } from '../../types/activity';
 
@@ -40,6 +40,13 @@ export function LogActivity({ onAddActivity }: LogActivityProps) {
     energy: false,
     shopping: false,
     waste: false
+  });
+  const [resultSource, setResultSource] = useState<Record<string, 'ai' | 'fallback'>>({
+    transport: 'ai',
+    food: 'ai',
+    energy: 'ai',
+    shopping: 'ai',
+    waste: 'ai'
   });
 
   const categories = [
@@ -83,6 +90,7 @@ export function LogActivity({ onAddActivity }: LogActivityProps) {
   const handleTextChange = (category: string, text: string) => {
     setActivityTexts(prev => ({ ...prev, [category]: text }));
     setParsedResults(prev => ({ ...prev, [category]: null }));
+    setResultSource(prev => ({ ...prev, [category]: 'ai' }));
   };
 
   const handleAnalyse = async (category: string) => {
@@ -93,12 +101,20 @@ export function LogActivity({ onAddActivity }: LogActivityProps) {
     try {
       const result = await parseActivityWithAI(text, category);
       setParsedResults(prev => ({ ...prev, [category]: result }));
+      setResultSource(prev => ({ ...prev, [category]: 'ai' }));
       if (result.items.length === 0) {
         toast.error('Could not identify any activities. Try being more specific.');
       }
     } catch (error) {
-      toast.error('Analysis failed. Check your API key and try again.');
       console.error(error);
+      const fallback = parseActivityText(text, category);
+      setParsedResults(prev => ({ ...prev, [category]: fallback }));
+      setResultSource(prev => ({ ...prev, [category]: 'fallback' }));
+      if (fallback.items.length === 0) {
+        toast.error('Could not identify any activities. Try being more specific.');
+      } else {
+        toast.info('AI unavailable — used offline parser instead.');
+      }
     } finally {
       setIsLoading(prev => ({ ...prev, [category]: false }));
     }
@@ -223,7 +239,9 @@ export function LogActivity({ onAddActivity }: LogActivityProps) {
                       <div className="text-forest-light font-bold text-2xl tracking-[-0.04em]">
                         {parsedResults[selectedCategory]!.totalCO2Impact.toFixed(2)} kg CO₂e
                       </div>
-                      <div className="text-[10px] text-forest-light/60 uppercase tracking-wide">Gemini Analysis Result</div>
+                      <div className="text-[10px] text-forest-light/60 uppercase tracking-wide">
+                        {resultSource[selectedCategory] === 'fallback' ? 'Offline Parser Result' : 'AI Analysis Result'}
+                      </div>
                     </div>
                     <button
                       onClick={() => toggleBreakdown(selectedCategory)}

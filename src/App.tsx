@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dashboard } from './components/features/Dashboard';
 import { LogActivity } from './components/features/LogActivity';
 import { Progress } from './components/features/Progress';
@@ -6,9 +6,22 @@ import { Navigation } from './components/layout/Navigation';
 import { Toaster } from './components/ui/sonner';
 import { Activity } from './types/activity';
 
+const STORAGE_KEY = 'ecotrack_activities';
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'log' | 'progress'>('dashboard');
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [activities, setActivities] = useState<Activity[]>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
+  }, [activities]);
 
   const addActivity = (activity: Omit<Activity, 'id'>) => {
     const newActivity: Activity = {
