@@ -93,5 +93,4 @@ temp/
 CLAUDE.md
 .claude/
 .superpowers/
-src/lib/llmParser.ts
 playwright-nlp-test.mjs
