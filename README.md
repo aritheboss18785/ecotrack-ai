@@ -1,114 +1,41 @@
-# EcoTrack AI - Carbon Footprint Tracker
+# EcoTrack AI
 
-🌱 **READY TO USE** | ✅ **NO LOGIN REQUIRED** | 🚀 **Live Demo**: [EcoTrack AI](https://aritheboss18785.github.io/ecotrack-ai/)
+A carbon footprint tracker that lets you log activities in plain English. Instead of filling out forms with dropdowns and unit conversions, you describe what you did — "drove 20 miles to work" or "had a burger and fries for lunch" — and Gemini figures out the CO₂.
 
-EcoTrack AI revolutionizes personal carbon footprint tracking with intelligent activity parsing. Unlike traditional apps that require manual input of numerical values, EcoTrack AI lets users describe their activities in plain English and automatically calculates precise carbon emissions.
+## What it does
 
-## 🎉 Key Features
+Three screens:
 
-### 🤖 Smart Activity Parsing
-- **Natural Language Input**: Simply describe what you did - "Had a burger for lunch", "Drove 25 miles to work"
-- **Intelligent Breakdown**: Automatically decomposes complex activities into components with emission factors
-- **Real-time Analysis**: See CO₂ calculations as you type with confidence scores
+**Dashboard** — your carbon budget for the day, a weekly trend chart, a breakdown by category, and your recent activity log. Also tracks a streak and XP level.
 
-### 📊 Scientific Accuracy
-- **Real Emission Factors**: Uses data from EPA, FAO, DEFRA, and other scientific sources
-- **Comprehensive Database**: 100+ emission factors covering food, transport, energy, shopping, and waste
-- **Source Transparency**: Every calculation shows its data source and methodology
+**Log Activity** — pick a category, describe what you did in plain English, hit Analyse. Gemini parses it into components with emission factors (a cheeseburger becomes beef 150g + bread 60g + cheese 20g), shows you the total CO₂e, and you log it.
 
-### 📱 Intuitive Interface
-- **Category-Based Logging**: Five main categories (Transport, Food, Energy, Shopping, Waste)
-- **Smart Suggestions**: Example phrases to guide users
-- **Progress Tracking**: Streaks, achievements, and carbon budget monitoring
+**Progress** — streak, monthly goal, week-by-week comparison, and achievements that are either earned or visibly locked.
 
-## 🚀 Getting Started
+## Getting started
 
-No setup required! The app works entirely in your browser.
+You need a Gemini API key — the free tier works. Get one at [aistudio.google.com](https://aistudio.google.com).
 
 ```bash
 npm install
+echo "VITE_GEMINI_API_KEY=your_key_here" > .env
 npm run dev
 ```
 
-## 📊 What You Get
+No backend, no database. All state is in-memory, so it resets on refresh.
 
-**Dashboard** — Daily carbon budget, weekly trends, category breakdown, and activity history with streak tracking and XP levels.
-
-**Log Activity** — Choose a category, describe your activity in plain English, and get instant CO₂ calculations with detailed component breakdown.
-
-**Progress** — Monthly goals, week-by-week comparisons, achievements, and carbon reduction insights.
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React, TypeScript, Vite
-- **Styling**: Tailwind CSS, Radix UI components
-- **Charts**: Recharts
-- **Parsing**: Custom rule-based activity parser
-- **Data**: Scientific emission factors database
-
-## 📈 Emission Factors
-
-The app includes comprehensive emission factors for:
-- **Food**: 40+ food items with precise CO₂e per kg/liter
-- **Transport**: Cars, public transit, flights, cycling, walking
-- **Energy**: Electricity (by grid mix), heating fuels
-- **Shopping**: Consumer goods with dollar-based estimates
-- **Waste**: Various waste types and disposal methods
-
-All factors sourced from EPA, FAO, DEFRA, and peer-reviewed scientific literature.
-
-## 🌍 Impact Tracking
-
-- **Daily Budget**: Set and track against personal carbon goals
-- **Weekly Trends**: Visualize your carbon footprint over time
-- **Category Insights**: See where your emissions come from
-- **Achievements**: Unlock badges for consistent low-carbon living
-- **Streaks**: Build habits with consecutive day tracking
-
-## 📝 Usage Examples
-
-**Food**: "ate a cheeseburger and fries" → Beef (150g) + Bread (60g) + Cheese (20g) + Potatoes (200g)
-
-**Transport**: "drove 25 miles to work in my gas car" → 0.4 kg CO₂e per mile × 25 miles
-
-**Energy**: "used 50 kWh of electricity today" → Grid mix emission factor × 50 kWh
-
-**Shopping**: "bought new jeans and a t-shirt" → Clothing emission factors
-
-**Waste**: "threw away 2 kg of food waste" → Food waste emission factor × 2 kg
-
-## 🔧 Development
+## Deploy
 
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Deploy to GitHub Pages
 npm run deploy
 ```
 
-## 📊 Data Sources
+Builds and pushes to GitHub Pages.
 
-- EPA (US Environmental Protection Agency)
-- FAO (Food and Agriculture Organization)
-- DEFRA (UK Department for Environment, Food & Rural Affairs)
-- IPCC (Intergovernmental Panel on Climate Change)
-- Peer-reviewed scientific literature
+## Stack
 
-## 🎯 Future Enhancements
+React, TypeScript, Vite, Tailwind CSS, Recharts, Radix UI. The AI parsing is a single call to `gemini-2.5-flash-lite` with a structured JSON response — `src/lib/llmParser.ts` is where that lives if you want to add emission factors or new categories. The emission factor database is in `src/lib/carbon/carbonEmissions.ts`.
 
-- Data persistence across sessions
-- Social features and leaderboards
-- Advanced analytics and insights
-- Integration with smart home devices
-- Carbon offset recommendations
+## A few things worth knowing
 
----
-
-**Built with ❤️ for a sustainable future**
+Activity data doesn't persist between sessions yet. The streak counts consecutive days ending yesterday — today doesn't count until tomorrow. Emission factors are from EPA, FAO, and DEFRA sources, baked in at build time.
