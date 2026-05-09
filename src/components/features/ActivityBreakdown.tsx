@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { ChevronDown, ChevronRight, Info, Zap } from 'lucide-react';
+import { ChevronDown, ChevronRight, Info } from 'lucide-react';
 import { Activity } from '../../types/activity';
 import { findEmissionFactor } from '../../lib/carbon/carbonEmissions';
 
@@ -64,128 +61,102 @@ export function ActivityBreakdown({ activities }: ActivityBreakdownProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-4">
-        <Zap size={20} className="text-green-600" />
-        <h2 className="text-xl text-gray-800">Activity Breakdown</h2>
-      </div>
-      
+    <div className="flex flex-col gap-3">
       {sortedDates.length === 0 ? (
-        <Card className="bg-gray-50">
-          <CardContent className="text-center py-8">
-            <div className="text-gray-500">No activities logged yet</div>
-            <div className="text-sm text-gray-400 mt-1">Start logging your daily activities to see detailed breakdowns</div>
-          </CardContent>
-        </Card>
+        <div className="p-8 text-center">
+          <div className="text-bark text-sm">No activities logged yet</div>
+          <div className="text-bark/60 text-xs mt-1">
+            Start logging your daily activities to see detailed breakdowns
+          </div>
+        </div>
       ) : (
         sortedDates.map(date => {
           const dayActivities = activitiesByDate[date];
-          const dayTotal = dayActivities.reduce((sum, activity) => sum + activity.co2Impact, 0);
-          
+          const dayTotal = dayActivities.reduce((sum, a) => sum + a.co2Impact, 0);
+
           return (
-            <Card key={date} className="bg-white border-gray-200">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg text-gray-800">
-                    {formatDate(date)}
-                  </CardTitle>
-                  <div className="text-right">
-                    <div className="text-lg text-gray-700">{dayTotal.toFixed(2)} kg CO₂e</div>
-                    <div className="text-sm text-gray-500">{dayActivities.length} activities</div>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {dayActivities.map(activity => {
-                    const details = getActivityDetails(activity);
-                    const isExpanded = expandedActivity === activity.id;
-                    
-                    return (
-                      <div key={activity.id} className="border border-gray-100 rounded-lg p-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 flex-1">
-                            <span className="text-xl">{getCategoryIcon(activity.category)}</span>
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-700 capitalize font-medium">
-                                  {activity.category}
+            <div key={date}>
+              <div className="flex items-center justify-between craft-label border-b border-[#d8cfc0] pb-[6px] mb-2">
+                <span>{formatDate(date)}</span>
+                <span>{dayTotal.toFixed(2)} kg CO₂e · {dayActivities.length} activities</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                {dayActivities.map(activity => {
+                  const details = getActivityDetails(activity);
+                  const isExpanded = expandedActivity === activity.id;
+
+                  return (
+                    <div key={activity.id} className="tile tile-hover p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 flex-1">
+                          <span className="text-xl">{getCategoryIcon(activity.category)}</span>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-forest font-medium capitalize">
+                                {activity.category}
+                              </span>
+                              {details && details.confidence > 0.7 && (
+                                <span className="text-[9px] uppercase tracking-wide text-forest-light bg-forest px-1.5 py-0.5 rounded-sm">
+                                  AI Parsed
                                 </span>
-                                {details && details.confidence > 0.7 && (
-                                  <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
-                                    AI Parsed
-                                  </Badge>
-                                )}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {activity.amount.toFixed(2)} {activity.unit} at {activity.time}
-                              </div>
-                              {details && (
-                                <div className="text-xs text-blue-600 mt-1">
-                                  {details.itemName}
-                                </div>
                               )}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="text-right">
-                              <div className="text-sm text-gray-600 font-medium">
-                                {activity.co2Impact.toFixed(2)} kg CO₂e
-                              </div>
                             </div>
                             {details && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => toggleExpanded(activity.id)}
-                                className="p-1 h-6 w-6"
-                              >
-                                {isExpanded ? (
-                                  <ChevronDown size={14} />
-                                ) : (
-                                  <ChevronRight size={14} />
-                                )}
-                              </Button>
+                              <div className="text-xs text-bark mt-0.5">{details.itemName}</div>
                             )}
+                            <div className="text-xs text-bark/60">
+                              {activity.amount.toFixed(2)} {activity.unit} at {activity.time}
+                            </div>
                           </div>
                         </div>
-                        
-                        {isExpanded && details && (
-                          <div className="mt-3 pt-3 border-t border-gray-100">
-                            <div className="grid grid-cols-2 gap-3 text-xs">
-                              <div>
-                                <span className="text-gray-500">Item:</span>
-                                <div className="text-gray-700">{details.itemName}</div>
-                              </div>
-                              <div>
-                                <span className="text-gray-500">Data Source:</span>
-                                <div className="text-gray-700">{details.source}</div>
-                              </div>
-                              {details.confidence > 0 && (
-                                <>
-                                  <div>
-                                    <span className="text-gray-500">AI Confidence:</span>
-                                    <div className="text-gray-700">{(details.confidence * 100).toFixed(0)}%</div>
-                                  </div>
-                                  <div>
-                                    <span className="text-gray-500">Unit:</span>
-                                    <div className="text-gray-700">{details.unit}</div>
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                            <div className="mt-2 flex items-center gap-1 text-xs text-blue-600">
-                              <Info size={12} />
-                              <span>Based on scientific emission factors</span>
-                            </div>
+                        <div className="flex items-center gap-2">
+                          <div className="text-sm text-forest font-medium">
+                            {activity.co2Impact.toFixed(2)} kg CO₂e
                           </div>
-                        )}
+                          {details && (
+                            <button
+                              onClick={() => toggleExpanded(activity.id)}
+                              className="text-forest p-1 rounded hover:bg-forest/10 transition-colors"
+                            >
+                              {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
+
+                      {isExpanded && details && (
+                        <div className="border-t border-[#d8cfc0] pt-2 mt-2 grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <div className="craft-label mb-0.5">ITEM</div>
+                            <div className="text-forest">{details.itemName}</div>
+                          </div>
+                          <div>
+                            <div className="craft-label mb-0.5">DATA SOURCE</div>
+                            <div className="text-forest">{details.source}</div>
+                          </div>
+                          {details.confidence > 0 && (
+                            <>
+                              <div>
+                                <div className="craft-label mb-0.5">AI CONFIDENCE</div>
+                                <div className="text-forest">{(details.confidence * 100).toFixed(0)}%</div>
+                              </div>
+                              <div>
+                                <div className="craft-label mb-0.5">UNIT</div>
+                                <div className="text-forest">{details.unit}</div>
+                              </div>
+                            </>
+                          )}
+                          <div className="col-span-2 text-bark/60 italic flex items-center gap-1 mt-1">
+                            <Info size={10} />
+                            <span>Based on scientific emission factors</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           );
         })
       )}
