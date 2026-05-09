@@ -367,7 +367,8 @@ export function Dashboard({ activities }: DashboardProps) {
               <div className="bg-forest px-[16px] py-[10px] text-[10px] font-semibold uppercase tracking-[0.12em] text-forest-light">
                 Recent Activities
               </div>
-              {activities
+              {[...activities]
+                .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
                 .slice(-3)
                 .reverse()
                 .map((activity) => {
