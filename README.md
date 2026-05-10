@@ -8,9 +8,9 @@ Three screens:
 
 **Dashboard** : your carbon budget for the day, a weekly trend chart, a breakdown by category, and your recent activity log. It also has a streak system and XP leveling.
 
-**Log Activity** : It has 5 different categories available (Transport, Food, Energy, Shopping, Waste) After picking one, describe what you did in plain English and press analyse. Gemini parses it into components with emission factors (a cheeseburger becomes beef 150g + bread 60g + cheese 20g), shows you the total CO₂e, and you can log it.
+**Log Activity** : It has 5 different categories available (Transport, Food, Energy, Shopping, Waste). After picking one, describe what you did in plain English and press analyse. Gemini parses it into components with emission factors (a cheeseburger becomes beef 150g + bread 60g + cheese 20g), shows you the total CO₂e, and you can log it.
 
-**Progress** : Displays showing your streak, monthly goal, week-by-week comparison, and achievements that are either earned or visibly locked.
+**Progress** : Displays your streak, monthly goal, week-by-week comparison, and achievements that are either earned or visibly locked.
 
 ## Getting started
 
@@ -18,11 +18,18 @@ You need a Gemini API key. Free tier is fine. Get one at [aistudio.google.com](h
 
 ```bash
 npm install
-echo "VITE_GEMINI_API_KEY=your_key_here" > .env
 npm run dev
 ```
 
-Currently there is no backend or no database. All state is in-memory, so it resets on refresh.
+Create a `.env.local` file in the project root and put your Gemini key in it:
+
+```bash
+GEMINI_API_KEY=your_key_here
+```
+
+Do not use `VITE_GEMINI_API_KEY`. The Gemini key is only used by the serverless API route and should never be exposed to the browser.
+
+There is no database yet. All state is in-memory, so it resets on refresh.
 
 ## Deploy
 
@@ -30,11 +37,17 @@ Currently there is no backend or no database. All state is in-memory, so it rese
 npm run deploy
 ```
 
-Builds and pushes to GitHub Pages.
+Builds and pushes to GitHub Pages. The static app can run there, but GitHub Pages will not run the `/api/gemini` serverless route, so AI parsing will fall back to the offline parser.
+
+For AI parsing in production, deploy on Vercel and set this environment variable in the Vercel project settings:
+
+```bash
+GEMINI_API_KEY=your_key_here
+```
 
 ## Stack
 
-React, TypeScript, Vite, Tailwind CSS, Recharts, Radix UI. The AI parsing is a single call to `gemini-2.5-flash-lite` with a structured JSON response. It is in `src/lib/llmParser.ts` if you want to add emission factors or new categories. The emission factor database is in `src/lib/carbon/carbonEmissions.ts`.
+React, TypeScript, Vite, Tailwind CSS, Recharts, Radix UI, and a Vercel serverless function. The AI parsing uses `gemini-2.5-flash-lite` with a structured JSON response. The client-side parser flow is in `src/lib/llmParser.ts`, and the server-side Gemini proxy is in `api/gemini.ts`. The emission factor database is in `src/lib/carbon/carbonEmissions.ts`.
 
 ## A few things worth knowing
 
