@@ -1,9 +1,6 @@
 import { calculateEmission } from './carbon/carbonEmissions';
 import { ParsedActivity } from './activityParser';
 
-const GEMINI_API_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent';
-
 const SYSTEM_PROMPT = `You are a carbon footprint calculator. Decompose the described activity into its raw components using ONLY the known items below, with realistic quantities.
 
 Food (quantity = kg): beef, lamb, pork, chicken, turkey, fish, salmon, tuna, shrimp, eggs, milk, cheese, butter, yogurt, rice, wheat, bread, pasta, oats, potatoes, tomatoes, lettuce, onions, carrots, broccoli, spinach, apples, bananas, oranges, avocados, almonds, peanuts, beans, lentils, tofu, coffee, tea, wine, beer
@@ -47,10 +44,7 @@ export const parseActivityWithAI = async (
   text: string,
   category: string
 ): Promise<ParsedActivity> => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) throw new Error('VITE_GEMINI_API_KEY is not set');
-
-  const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+  const response = await fetch('/api/gemini', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
